@@ -1,15 +1,36 @@
-Rewards Program Service:
-=========================
+**Rewards Program:**
 
-An application that calculates customer reward points based on transaction history using different reward strategies controlled via feature toggles (Togglz).
+**Overview**
+The Rewards Program is a Spring Boot application that calculates reward points for customers based on their transaction history. The system applies reward calculation rules dynamically using feature toggles It supports:
 
-Access the API at:
-========================
+****Basic Rewards**:** Standard reward calculation.
+**Feature Flags:** Enable or disable additional reward strategies like flat-per-dollar or holiday bonuses.
+**Monthly and Total Points Calculation:** Provides breakdown of rewards by month and a cumulative total.
 
-GET: http://localhost:9091/api/rewards/{customerId}
+**Technologies Used:**
+Java 8
+Spring Boot 2.x
+Spring Web (REST API)
+SpringDoc OpenAPI (Swagger UI)
+Togglz (Feature Toggle Management)
+Maven (Build Tool)
+Lombok (Reduce boilerplate code)
 
-API Response Format:
-=========================
+**Feature Toggles:**
+
+togglz.feature-BASIC_REWARD=true
+togglz.feature-FLAT_PER_DOLLAR=false
+togglz.feature-HOLIDAY_BONUS=false
+
+**Access the Application:**
+
+API Base URL: GET /api/rewards?customerId=CUST1002&startDate=2025-08-10&endDate=2025-08-30
+Header: X-API-VERSION: 1
+
+Swagger UI: http://localhost:9091/swagger-ui/index.html
+Togglz Console: http://localhost:9091/togglz-console
+
+**API Response Format:**
 
 {
   "statusCode": 200,
@@ -37,31 +58,13 @@ API Response Format:
   }
 }
 
-Features Implemented:
-==========================
+Build the project : mvn clean install
+Run the application: mvn spring-boot:run
 
-Feature Toggles using Togglz :
+**Example:**
+If transaction amount = $120:
+- $50 → 0 points
+- $50-$100 → 50 points
+- Above $100 (20 dollars) → 40 points (20 * 2)
+Total = 90 points
 
-  BASIC_REWARD (Enabled)
-
-  FLAT_PER_DOLLAR (Disabled)
-
-  HOLIDAY_BONUS (Disabled)
-
-Calculates monthly reward points and total points for a customer.
-
-Returns detailed response including:
-
-  customerId
-
-  monthlyPoints (Grouped by yyyy-MM)
-
-  totalPoints
-
-  transactions list
-
-  message
-
-Handles asynchronous calls using CompletableFuture.
-
-Error Handling with proper message and status code.
